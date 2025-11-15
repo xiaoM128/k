@@ -5,7 +5,7 @@ on:
     inputs:
       version:
         description: "NDK Release version:"
-        default: "29"
+        default: "26c"
         required: true
       revision:
         description: "NDK Release revision:"
@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         # riscv64-linux-android
-        target: [aarch64-linux-android, armv7a-linux-androideabi, i686-linux-android, x86_64-linux-android]
+        target: [aarch64-linux-android]
     runs-on: ubuntu-24.04
     env:
       ANDROID_PLATFORM: 25
@@ -73,9 +73,11 @@ jobs:
           fi
 
           echo "Downloading LLVM source (revision $LLVM_REV)..."
-          curl -sSfL -o llvm-project.tar.gz "https://android.googlesource.com/toolchain/llvm-project/+archive/$LLVM_REV.tar.gz"
-          tar -xf llvm-project.tar.gz
-          rm llvm-project.tar.gz
+          git clone https://github.com/za233/Polaris-Obfuscator.git
+          cd Polaris-Obfuscator
+          rm -rf .git
+          mv src/* $ROOTDIR
+          cd $ROOTDIR
 
           echo "Cloning llvm_android at commit $ANDROID_REV..."
           git clone --quiet https://android.googlesource.com/toolchain/llvm_android ../llvm_android
@@ -269,9 +271,7 @@ jobs:
             -DLLVM_ENABLE_CURL=OFF \
             -DLLVM_ENABLE_THREADS=ON \
             -DLLVM_VERSION_SUFFIX="" \
-            -DCLANG_VENDOR="Android" \
-            -DCLANG_REPOSITORY_STRING="https://github.com/${{ github.repository_owner }}/llvm-custom" \
-            -DPACKAGE_BUGREPORT="https://github.com/${{ github.repository_owner }}/android-ndk-custom/issues/"
+            -DCLANG_VENDOR="Android"
 
           cmake --build "${TARGET_BUILD_DIR}" --target install
 
