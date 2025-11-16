@@ -74,7 +74,7 @@ jobs:
 
           echo "Downloading LLVM source (revision $LLVM_REV)..."
           git clone https://github.com/xiaoM128/p.git
-          cd Polaris-Obfuscator
+          cd p
           rm -rf .git
           mv src/* $ROOTDIR
           cd ..
